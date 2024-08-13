@@ -37,7 +37,7 @@ export default class Convert {
 		for (let i = 0; i < arr.length; i++) {
 			s.push(String.fromCharCode(arr[i]))
 		}
-		return decodeURIComponent(escape(s.join('')))
+		return decodeURIComponent(encodeURIComponent(s.join('')))
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class Convert {
 		if (typeof str !== 'string') {
 			throw new TypeError('expected string')
 		}
-		const d = unescape(encodeURIComponent(str))
+		const d = decodeURIComponent(encodeURIComponent(str))
 		const b = new Uint8Array(d.length)
 		for (let i = 0; i < d.length; i++) {
 			b[i] = d.charCodeAt(i)
@@ -65,7 +65,7 @@ export default class Convert {
 	 * @return {String} Hex encoded string
 	 */
 	static ab2hex = (buf: ArrayBuffer): string => {
-		return Array.prototype.map.call(new Uint8Array(buf), x => ('00' + x.toString(16)).slice(-2)).join('')
+		return Array.prototype.map.call(new Uint8Array(buf), x => (`00${x.toString(16)}`).slice(-2)).join('')
 	}
 
 	/**
@@ -77,7 +77,7 @@ export default class Convert {
 	static hex2ab = (hex: string): Uint8Array => {
 		const ab = []
 		for (let i = 0; i < hex.length; i += 2) {
-			ab.push(parseInt(hex.substr(i, 2), 16))
+			ab.push(parseInt(hex.substring(i, i+2), 16))
 		}
 		return new Uint8Array(ab)
 	}
@@ -112,13 +112,13 @@ export default class Convert {
 		let joined = hex.join('')
 
 		if (joined.length % 2 != 0) {
-			joined = '0' + joined
+			joined = `0${joined}`
 		}
 
 		if (bytes > joined.length / 2) {
 			const diff = bytes - joined.length / 2
 			for (let i = 0; i < diff; i++) {
-				joined = '00' + joined
+				joined = `00${joined}`
 			}
 		}
 

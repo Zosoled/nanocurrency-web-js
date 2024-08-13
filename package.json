@@ -1,6 +1,6 @@
 {
 	"name": "nanocurrency-web",
-	"version": "1.4.3",
+	"version": "2.0.0",
 	"description": "Toolkit for Nano cryptocurrency client side offline integrations",
 	"author": "Miro Metsänheimo <miro@metsanheimo.fi>",
 	"license": "MIT",
@@ -27,19 +27,21 @@
 	"types": "dist/index.d.ts",
 	"unpkg": "dist/index.min.js",
 	"scripts": {
-		"build": "rm -rf dist && tsc && npm run build:webpack",
-		"build:webpack": "webpack",
+		"build": "rm -rf dist && tsc && webpack",
 		"test": "mocha --reporter spec"
 	},
 	"dependencies": {
 		"bignumber.js": "^9.1.2",
 		"blakejs": "^1.2.1",
+		"buffer": "^6.0.3",
 		"byte-base64": "^1.1.0",
-		"crypto-js": "^4.2.0"
+		"crypto-browserify": "^3.12.0",
+		"stream-browserify": "^3.0.0",
+		"vm-browserify": "^1.1.2"
 	},
 	"devDependencies": {
 		"chai": "^5.1.1",
-		"mocha": "^10.7.0",
+		"mocha": "^10.7.3",
 		"ts-loader": "^9.5.1",
 		"typescript": "^5.5.4",
 		"webpack": "^5.93.0",

@@ -1,6 +1,5 @@
+import { randomBytes } from 'crypto'
 import * as base64 from 'byte-base64'
-//@ts-ignore
-import { lib } from 'crypto-js'
 
 import Ed25519 from './ed25519'
 import NanoAddress from './nano-address'
@@ -22,7 +21,7 @@ export default class Box {
 			publicKey,
 		})
 
-		const nonce = Convert.hex2ab(lib.WordArray.random(this.NONCE_LENGTH).toString())
+		const nonce = Convert.hex2ab(randomBytes(this.NONCE_LENGTH).toString())
 		const encrypted = new Curve25519().box(
 			Convert.decodeUTF8(message),
 			nonce,

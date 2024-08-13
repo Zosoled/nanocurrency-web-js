@@ -1,5 +1,4 @@
-//@ts-ignore
-import { PBKDF2, SHA256, algo, enc, lib } from 'crypto-js'
+import { createHash, pbkdf2Sync, randomBytes, webcrypto } from 'crypto'
 
 import Convert from './util/convert'
 import Util from './util/util'
@@ -19,7 +18,7 @@ export default class Bip39Mnemonic {
 				throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
 			}
 			if (!/^[0-9a-fA-F]+$/i.test(entropy)) {
-				throw new Error('Entopy is not a valid hexadecimal string')
+				throw new Error('Entropy is not a valid hexadecimal string')
 			}
 		}
 
@@ -45,10 +44,10 @@ export default class Bip39Mnemonic {
 	static createLegacyWallet = (seed?: string): MnemonicSeed => {
 		if (seed) {
 			if (seed.length !== 64) {
-				throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
+				throw new Error('Invalid seed length, must be a 32 bit hexadecimal string')
 			}
 			if (!/^[0-9a-fA-F]+$/i.test(seed)) {
-				throw new Error('Entopy is not a valid hexadecimal string')
+				throw new Error('Seed is not a valid hexadecimal string')
 			}
 		}
 
@@ -67,11 +66,12 @@ export default class Bip39Mnemonic {
 	static deriveMnemonic = (entropy: string): string => {
 		const entropyBinary = Convert.hexStringToBinary(entropy)
 		const entropySha256Binary = Convert.hexStringToBinary(this.calculateChecksum(entropy))
-		const entropyBinaryWithChecksum = entropyBinary + entropySha256Binary
+		const entropyBinaryWithChecksum = entropyBinary.concat(entropySha256Binary)
 
 		const mnemonicWords = []
 		for (let i = 0; i < entropyBinaryWithChecksum.length; i += 11) {
-			mnemonicWords.push(words[parseInt(entropyBinaryWithChecksum.substr(i, 11), 2)])
+			const nextWord = entropyBinaryWithChecksum.substring(i, i+11)
+			mnemonicWords.push(words[parseInt(nextWord, 2)])
 		}
 
 		return mnemonicWords.join(' ')
@@ -155,26 +155,25 @@ export default class Bip39Mnemonic {
 	 */
 	static mnemonicToSeed = (mnemonic: string, password: string): string => {
 		const normalizedMnemonic = Util.normalizeUTF8(mnemonic)
-		const normalizedPassword = 'mnemonic' + Util.normalizeUTF8(password)
+		const normalizedPassword = `mnemonic${Util.normalizeUTF8(password)}`
 
-		return PBKDF2(
+		// password, salt, iterations, keylen, digest
+		const key: Buffer = pbkdf2Sync(
 			normalizedMnemonic,
 			normalizedPassword,
-			{
-				keySize: 512 / 32,
-				iterations: 2048,
-				hasher: algo.SHA512,
-			})
-			.toString(enc.Hex)
+			2048,
+			(512 / 8),
+			'sha512')
+		return key.toString('hex')
 	}
 
 	private static randomHex = (length: number): string => {
-		return lib.WordArray.random(length).toString()
+		return randomBytes(length).toString('hex')
 	}
 
 	private static calculateChecksum = (entropyHex: string): string => {
-		const entropySha256 = SHA256(enc.Hex.parse(entropyHex)).toString()
-		return entropySha256.substr(0, entropySha256.length / 32)
+		const entropySha256 = createHash('sha256').update(entropyHex, 'hex').digest('hex')
+		return entropySha256.substring(0, entropySha256.length / 32)
 	}
 
 }

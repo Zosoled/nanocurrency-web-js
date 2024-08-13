@@ -14,6 +14,12 @@ module.exports = {
 	},
 	resolve: {
 		extensions: ['.ts', '.js', '.json'],
+		fallback: {
+			buffer: require.resolve('buffer'),
+			crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      vm: require.resolve('vm-browserify'),
+		}
 	},
 	output: {
 		filename: 'index.min.js',

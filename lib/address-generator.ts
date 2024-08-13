@@ -9,7 +9,7 @@ export default class AddressGenerator {
 	 * @param {string} [entropy] - (Optional) Custom entropy if the caller doesn't want a default generated entropy
 	 * @param {string} [seedPassword] - (Optional) Password for the seed
 	 */
-	static generateWallet = (entropy = '', seedPassword: string = ''): Wallet => {
+	static generateWallet = (entropy: string = '', seedPassword: string = ''): Wallet => {
 		const mnemonicSeed = Bip39Mnemonic.createWallet(entropy, seedPassword)
 		const wallet = AddressImporter.fromSeed(mnemonicSeed.seed, 0, 0)
 		return {

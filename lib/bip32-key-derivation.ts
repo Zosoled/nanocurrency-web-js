@@ -1,6 +1,4 @@
-//@ts-ignore
-import { algo, enc } from 'crypto-js'
-
+import { createHmac } from 'crypto'
 import Convert from './util/convert'
 
 const ED25519_CURVE = 'ed25519 seed'
@@ -23,8 +21,8 @@ export default class Bip32KeyDerivation {
 
 	private static getKeyFromSeed = (seed: string): Chain => {
 		return this.derive(
-			enc.Hex.parse(seed),
-			enc.Utf8.parse(ED25519_CURVE))
+			Buffer.from(seed, 'hex').toString('hex'),
+			Buffer.from(ED25519_CURVE, 'utf8').toString('hex'))
 	}
 
 	private static CKDPriv = ({ key, chainCode }: Chain, index: number) => {
@@ -33,16 +31,16 @@ export default class Bip32KeyDerivation {
 		ib.push((index >> 16) & 0xff)
 		ib.push((index >> 8) & 0xff)
 		ib.push(index & 0xff)
-		const data = '00' + key + Convert.ab2hex(new Uint8Array(ib).buffer)
+		const data = `00${key}${Convert.ab2hex(new Uint8Array(ib).buffer)}`
 
 		return this.derive(
-			enc.Hex.parse(data),
-			enc.Hex.parse(chainCode))
+			Buffer.from(data, 'hex').toString('hex'),
+			Buffer.from(chainCode, 'hex').toString('hex'))
 	}
 
 	private static derive = (data: string, base: string): Chain => {
-		const hmac = algo.HMAC.create(algo.SHA512, base)
-		const I = hmac.update(data).finalize().toString()
+		const hmac = createHmac('sha512', base, { encoding: 'hex' })
+		const I = hmac.update(data, 'hex').digest('hex')
 		const IL = I.slice(0, I.length / 2)
 		const IR = I.slice(I.length / 2)
 
