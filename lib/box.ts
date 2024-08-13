@@ -21,7 +21,7 @@ export default class Box {
 			publicKey,
 		})
 
-		const nonce = Convert.hex2ab(randomBytes(this.NONCE_LENGTH).toString())
+		const nonce = Convert.hex2ab(randomBytes(this.NONCE_LENGTH).toString('hex'))
 		const encrypted = new Curve25519().box(
 			Convert.decodeUTF8(message),
 			nonce,
