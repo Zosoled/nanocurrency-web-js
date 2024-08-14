@@ -1,6 +1,6 @@
 'use strict'
 
-const { expect, should } = await import('chai')
+const { expect } = await import('chai')
 const { wallet, block, tools, box } = await import('../dist/index.js')
 
 // WARNING: Do not send any funds to the test vectors below
