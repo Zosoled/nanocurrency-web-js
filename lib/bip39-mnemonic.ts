@@ -54,7 +54,7 @@ export default class Bip39Mnemonic {
 
 	static deriveMnemonic = async (entropy: string): Promise<string> => {
 		const entropyBinary = Convert.hexStringToBinary(entropy)
-		const entropySha256Binary = Convert.hexStringToBinary(this.calculateChecksum(entropy))
+		const entropySha256Binary = Convert.hexStringToBinary(await this.calculateChecksum(entropy))
 		const entropyBinaryWithChecksum = entropyBinary.concat(entropySha256Binary)
 
 		const { words } = await import('./words')
@@ -106,7 +106,7 @@ export default class Bip39Mnemonic {
 		}
 
 		const entropyHex = Convert.bytesToHexString(entropyBytes)
-		const newChecksum = this.calculateChecksum(entropyHex)
+		const newChecksum = await this.calculateChecksum(entropyHex)
 		const inputChecksum = Convert.binaryToHexString(checksumBits)
 
 		if (parseInt(newChecksum, 16) != parseInt(inputChecksum, 16)) {
@@ -169,11 +169,17 @@ export default class Bip39Mnemonic {
 		return randomBytes(length).toString('hex')
 	}
 
-	private static calculateChecksum = (entropyHex: string): string => {
+	private static calculateChecksum = async (entropyHex: string): Promise<string> => {
+		const { createHash } = await import('crypto')
+		return new Promise((resolve, reject) => {
+			try {
 		const entropySha256 = createHash('sha256').update(entropyHex, 'hex').digest('hex')
-		return entropySha256.substring(0, entropySha256.length / 32)
+				resolve(entropySha256.substring(0, entropySha256.length / 32))
+			} catch (err) {
+				reject(err)
 	}
-
+		})
+	}
 }
 
 interface MnemonicSeed {
