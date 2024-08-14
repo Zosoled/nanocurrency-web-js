@@ -145,10 +145,11 @@ export default class Bip39Mnemonic {
 	 *
 	 * @param {string} mnemonic Mnemonic phrase separated by spaces
 	 */
-	static mnemonicToSeed = (mnemonic: string, password: string): Promise<string> => {
+	static mnemonicToSeed = async (mnemonic: string, password: string): Promise<string> => {
 		const normalizedMnemonic = Util.normalizeUTF8(mnemonic)
 		const normalizedPassword = `mnemonic${Util.normalizeUTF8(password)}`
 
+		const { pbkdf2 } = await import('crypto')
 		// password, salt, iterations, keylen, digest
 		return new Promise((resolve, reject) => {
 			pbkdf2(
