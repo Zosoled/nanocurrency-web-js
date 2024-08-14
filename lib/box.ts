@@ -1,5 +1,4 @@
 import { randomBytes } from 'crypto'
-import * as base64 from 'byte-base64'
 
 import Ed25519 from './ed25519'
 import NanoAddress from './nano-address'
@@ -33,7 +32,7 @@ export default class Box {
 		full.set(nonce)
 		full.set(encrypted, nonce.length)
 
-		return base64.bytesToBase64(full)
+		return Buffer.from(full).toString('base64')
 	}
 
 	static decrypt(encrypted: string, address: string, privateKey: string) {
@@ -47,7 +46,7 @@ export default class Box {
 			publicKey,
 		})
 
-		const decodedEncryptedMessageBytes = base64.base64ToBytes(encrypted)
+		const decodedEncryptedMessageBytes = new Uint8Array(Buffer.from(encrypted, 'base64'))
 		const nonce = decodedEncryptedMessageBytes.slice(0, this.NONCE_LENGTH)
 		const encryptedMessage = decodedEncryptedMessageBytes.slice(this.NONCE_LENGTH, encrypted.length)
 
