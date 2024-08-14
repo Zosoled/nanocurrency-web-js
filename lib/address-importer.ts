@@ -15,7 +15,8 @@ export default class AddressImporter {
 	 * @returns {Wallet} - The wallet derived from the mnemonic phrase
 	 */
 	static fromMnemonic = async (mnemonic: string, seedPassword = ''): Promise<Wallet> => {
-		if (!Bip39Mnemonic.validateMnemonic(mnemonic)) {
+		const valid = await this.validateMnemonic(mnemonic)
+		if (!valid) {
 			throw new Error('Invalid mnemonic phrase')
 		}
 
@@ -36,7 +37,8 @@ export default class AddressImporter {
 	 * @returns {Wallet} - The wallet derived from the mnemonic phrase
 	 */
 	static fromLegacyMnemonic = async (mnemonic: string): Promise<Wallet> => {
-		if (!Bip39Mnemonic.validateMnemonic(mnemonic)) {
+		const valid = await this.validateMnemonic(mnemonic)
+		if (!valid) {
 			throw new Error('Invalid mnemonic phrase')
 		}
 
