@@ -14,13 +14,13 @@ export default class AddressImporter {
 	 * @param {string} [seedPassword] - (Optional) The password to use to secure the mnemonic
 	 * @returns {Wallet} - The wallet derived from the mnemonic phrase
 	 */
-	static fromMnemonic = (mnemonic: string, seedPassword = ''): Wallet => {
+	static fromMnemonic = async (mnemonic: string, seedPassword = ''): Promise<Wallet> => {
 		if (!Bip39Mnemonic.validateMnemonic(mnemonic)) {
 			throw new Error('Invalid mnemonic phrase')
 		}
 
-		const seed = Bip39Mnemonic.mnemonicToSeed(mnemonic, seedPassword)
-		const accounts = this.accounts(seed, 0, 0)
+		const seed = await Bip39Mnemonic.mnemonicToSeed(mnemonic, seedPassword)
+		const accounts = await this.accounts(seed, 0, 0)
 
 		return {
 			mnemonic,
@@ -35,13 +35,13 @@ export default class AddressImporter {
 	 * @param {string} mnemonic - The mnemonic words to import the wallet from
 	 * @returns {Wallet} - The wallet derived from the mnemonic phrase
 	 */
-	static fromLegacyMnemonic = (mnemonic: string): Wallet => {
+	static fromLegacyMnemonic = async (mnemonic: string): Promise<Wallet> => {
 		if (!Bip39Mnemonic.validateMnemonic(mnemonic)) {
 			throw new Error('Invalid mnemonic phrase')
 		}
 
-		const seed = Bip39Mnemonic.mnemonicToLegacySeed(mnemonic)
-		return this.fromLegacySeed(seed, 0, 0, mnemonic)
+		const seed = await Bip39Mnemonic.mnemonicToLegacySeed(mnemonic)
+		return await this.fromLegacySeed(seed, 0, 0, mnemonic)
 	}
 
 	/**
@@ -49,8 +49,8 @@ export default class AddressImporter {
 	 *
 	 * @param mnemonic {string} mnemonic - The mnemonic words to validate
 	 */
-	static validateMnemonic = (mnemonic: string): boolean => {
-		return Bip39Mnemonic.validateMnemonic(mnemonic)
+	static validateMnemonic = async (mnemonic: string): Promise<boolean> => {
+		return await Bip39Mnemonic.validateMnemonic(mnemonic)
 	}
 
 	/**
@@ -61,7 +61,7 @@ export default class AddressImporter {
 	 * @param {number} [to] - (Optional) The end index of the private keys to derive to
 	 * @returns {Wallet} The wallet derived from the mnemonic phrase
 	 */
-	static fromSeed = (seed: string, from = 0, to = 0): Wallet => {
+	static fromSeed = async (seed: string, from = 0, to = 0): Promise<Wallet> => {
 		if (seed.length !== 128) {
 			throw new Error('Invalid seed length, must be a 128 byte hexadecimal string')
 		}
@@ -69,7 +69,7 @@ export default class AddressImporter {
 			throw new Error('Seed is not a valid hexadecimal string')
 		}
 
-		const accounts = this.accounts(seed, from, to)
+		const accounts = await this.accounts(seed, from, to)
 
 		return {
 			mnemonic: undefined,
@@ -87,7 +87,7 @@ export default class AddressImporter {
 	 * @param {number} [to] - (Optional) The end index of the private keys to derive to
 	 * @returns {Wallet} The wallet derived from the seed
 	 */
-	static fromLegacySeed = (seed: string, from: number = 0, to: number = 0, mnemonic?: string): Wallet => {
+	static fromLegacySeed = async (seed: string, from: number = 0, to: number = 0, mnemonic?: string): Promise<Wallet> => {
 		if (seed.length !== 64) {
 			throw new Error('Invalid seed length, must be a 64 byte hexadecimal string')
 		}
@@ -95,9 +95,9 @@ export default class AddressImporter {
 			throw new Error('Seed is not a valid hexadecimal string')
 		}
 
-		const accounts = this.legacyAccounts(seed, from, to)
+		const accounts = await this.legacyAccounts(seed, from, to)
 		return {
-			mnemonic: mnemonic || Bip39Mnemonic.deriveMnemonic(seed),
+			mnemonic: mnemonic || await Bip39Mnemonic.deriveMnemonic(seed),
 			seed,
 			accounts,
 		}
@@ -110,22 +110,26 @@ export default class AddressImporter {
 	 * @param {number} from - The start index of private keys to derive from
 	 * @param {number} to - The end index of private keys to derive to
 	 */
-	private static accounts = (seed: string, from: number, to: number): Account[] => {
-		const accounts = []
-
-		for (let i = from; i <= to; i++) {
-			const privateKey = Bip32KeyDerivation.derivePath(`44'/165'/${i}'`, seed).key
-			const keyPair = new Ed25519().generateKeys(privateKey)
-			const address = NanoAddress.deriveAddress(keyPair.publicKey)
-			accounts.push({
-				accountIndex: i,
-				privateKey: keyPair.privateKey,
-				publicKey: keyPair.publicKey,
-				address,
-			})
-		}
-
-		return accounts
+	private static accounts = async (seed: string, from: number, to: number): Promise<Account[]> => {
+		return new Promise((resolve, reject) => {
+			try {
+				const accounts = []
+				for (let i = from; i <= to; i++) {
+					const privateKey = Bip32KeyDerivation.derivePath(`44'/165'/${i}'`, seed).key
+					const keyPair = new Ed25519().generateKeys(privateKey)
+					const address = NanoAddress.deriveAddress(keyPair.publicKey)
+					accounts.push({
+						accountIndex: i,
+						privateKey: keyPair.privateKey,
+						publicKey: keyPair.publicKey,
+						address,
+					})
+				}
+				resolve(accounts)
+			} catch (err) {
+				reject(err)
+			}
+		})
 	}
 
 	/**
@@ -135,7 +139,7 @@ export default class AddressImporter {
 	 * @param {number} from - The start index of private keys to derive from
 	 * @param {number} to - The end index of private keys to derive to
 	 */
-	private static legacyAccounts = (seed: string, from: number, to: number): Account[] => {
+	private static legacyAccounts = async (seed: string, from: number, to: number): Promise<Account[]> => {
 		const accounts: Account[] = []
 		for (let i = from; i <= to; i++) {
 			const privateKey = Convert.ab2hex(Signer.generateHash([ seed, Convert.dec2hex(i, 4) ]))

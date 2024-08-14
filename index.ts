@@ -33,8 +33,8 @@ const wallet = {
 	 * @param {string} [seedPassword] - (Optional) seed password
 	 * @returns {Wallet} The wallet
 	 */
-	generate: (entropy?: string, seedPassword?: string): Wallet => {
-		return AddressGenerator.generateWallet(entropy, seedPassword)
+	generate: async (entropy?: string, seedPassword?: string): Promise<Wallet> => {
+		return await AddressGenerator.generateWallet(entropy, seedPassword)
 	},
 
 	/**
@@ -52,8 +52,8 @@ const wallet = {
 	 * @param {string} [seed] - (Optional) 64 byte hexadecimal string seed to be used instead of generating it
 	 * @returns {Wallet} The wallet
 	 */
-	generateLegacy: (seed?: string): Wallet => {
-		return AddressGenerator.generateLegacyWallet(seed)
+	generateLegacy: async (seed?: string): Promise<Wallet> => {
+		return await AddressGenerator.generateLegacyWallet(seed)
 	},
 
 	/**
@@ -71,8 +71,8 @@ const wallet = {
 	 * @throws Throws an error if the mnemonic phrase doesn't pass validations
 	 * @returns {Wallet} The wallet
 	 */
-	fromMnemonic: (mnemonic: string, seedPassword?: string): Wallet => {
-		return AddressImporter.fromMnemonic(mnemonic, seedPassword)
+	fromMnemonic: async (mnemonic: string, seedPassword?: string): Promise<Wallet> => {
+		return await AddressImporter.fromMnemonic(mnemonic, seedPassword)
 	},
 
 	/**
@@ -88,8 +88,8 @@ const wallet = {
 	 * @throws Throws an error if the mnemonic phrase doesn't pass validations
 	 * @returns {Wallet} The wallet
 	 */
-	fromLegacyMnemonic: (mnemonic: string): Wallet => {
-		return AddressImporter.fromLegacyMnemonic(mnemonic)
+	fromLegacyMnemonic: async (mnemonic: string): Promise<Wallet> => {
+		return await AddressImporter.fromLegacyMnemonic(mnemonic)
 	},
 
 	/**
@@ -105,8 +105,8 @@ const wallet = {
 	 * @param {string} seed - The seed
 	 * @returns {Wallet} The wallet, without the mnemonic phrase because it's not possible to infer backwards
 	 */
-	fromSeed: (seed: string): Wallet => {
-		return AddressImporter.fromSeed(seed)
+	fromSeed: async (seed: string): Promise<Wallet> => {
+		return await AddressImporter.fromSeed(seed)
 	},
 
 	/**
@@ -122,8 +122,8 @@ const wallet = {
 	 * @param {string} seed - The seed
 	 * @returns {Wallet} The wallet
 	 */
-	fromLegacySeed: (seed: string): Wallet => {
-		return AddressImporter.fromLegacySeed(seed)
+	fromLegacySeed: async (seed: string): Promise<Wallet> => {
+		return await AddressImporter.fromLegacySeed(seed)
 	},
 
 	/**
@@ -138,8 +138,9 @@ const wallet = {
 	 * @param {number} to - The end index
 	 * @returns {Account[]} a list of accounts
 	 */
-	accounts: (seed: string, from: number, to: number): Account[] => {
-		return AddressImporter.fromSeed(seed, from, to).accounts
+	accounts: async (seed: string, from: number, to: number): Promise<Account[]> => {
+		const wallet = await AddressImporter.fromSeed(seed, from, to)
+		return wallet.accounts
 	},
 
 	/**
@@ -153,8 +154,9 @@ const wallet = {
 	 * @param {number} to - The end index
 	 * @returns {Account[]} a list of accounts
 	 */
-	legacyAccounts: (seed: string, from: number, to: number): Account[] => {
-		return AddressImporter.fromLegacySeed(seed, from, to).accounts
+	legacyAccounts: async (seed: string, from: number, to: number): Promise<Account[]> => {
+		const wallet = await AddressImporter.fromLegacySeed(seed, from, to)
+		return wallet.accounts
 	},
 
 }
@@ -311,8 +313,8 @@ const tools = {
 	 * @param {string} input The address to validate
 	 * @returns {boolean} valid or not
 	 */
-	validateMnemonic: (input: string): boolean => {
-		return AddressImporter.validateMnemonic(input)
+	validateMnemonic: async (input: string): Promise<boolean> => {
+		return await AddressImporter.validateMnemonic(input)
 	},
 
 	/**

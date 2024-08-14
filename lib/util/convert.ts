@@ -37,7 +37,7 @@ export default class Convert {
 		for (let i = 0; i < arr.length; i++) {
 			s.push(String.fromCharCode(arr[i]))
 		}
-		return decodeURIComponent(encodeURIComponent(s.join('')))
+		return decodeURIComponent(escape(s.join('')))
 	}
 
 	/**
@@ -50,7 +50,7 @@ export default class Convert {
 		if (typeof str !== 'string') {
 			throw new TypeError('expected string')
 		}
-		const d = decodeURIComponent(encodeURIComponent(str))
+		const d = unescape(encodeURIComponent(str))
 		const b = new Uint8Array(d.length)
 		for (let i = 0; i < d.length; i++) {
 			b[i] = d.charCodeAt(i)

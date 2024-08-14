@@ -1,5 +1,4 @@
-const words = [
-
+export const words: string[] = [
 	'abandon',
 	'ability',
 	'able',

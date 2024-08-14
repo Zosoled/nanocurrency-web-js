@@ -1,8 +1,7 @@
-import { createHash, pbkdf2Sync, randomBytes, webcrypto } from 'crypto'
+import { createHash, pbkdf2, randomBytes } from 'crypto'
 
 import Convert from './util/convert'
 import Util from './util/util'
-import words from './words'
 
 export default class Bip39Mnemonic {
 
@@ -12,7 +11,7 @@ export default class Bip39Mnemonic {
 	 * @param {string} [entropy] - (Optional) the entropy to use instead of generating
 	 * @returns {MnemonicSeed} The mnemonic phrase and a seed derived from the (generated) entropy
 	 */
-	static createWallet = (entropy: string, password: string): MnemonicSeed => {
+	static createWallet = async (entropy: string, password: string): Promise<MnemonicSeed> => {
 		if (entropy) {
 			if (entropy.length !== 64) {
 				throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
@@ -26,8 +25,8 @@ export default class Bip39Mnemonic {
 			entropy = this.randomHex(32)
 		}
 
-		const mnemonic = this.deriveMnemonic(entropy)
-		const seed = this.mnemonicToSeed(mnemonic, password)
+		const mnemonic = await this.deriveMnemonic(entropy)
+		const seed = await this.mnemonicToSeed(mnemonic, password)
 
 		return {
 			mnemonic,
@@ -41,7 +40,7 @@ export default class Bip39Mnemonic {
 	 * @param {string} seed - (Optional) the seed to be used for the wallet
 	 * @returns {MnemonicSeed} The mnemonic phrase and a generated seed if none provided
 	 */
-	static createLegacyWallet = (seed?: string): MnemonicSeed => {
+	static createLegacyWallet = async (seed?: string): Promise<MnemonicSeed> => {
 		if (seed) {
 			if (seed.length !== 64) {
 				throw new Error('Invalid seed length, must be a 32 bit hexadecimal string')
@@ -55,7 +54,7 @@ export default class Bip39Mnemonic {
 			seed = this.randomHex(32)
 		}
 
-		const mnemonic = this.deriveMnemonic(seed)
+		const mnemonic = await this.deriveMnemonic(seed)
 
 		return {
 			mnemonic,
@@ -63,14 +62,15 @@ export default class Bip39Mnemonic {
 		}
 	}
 
-	static deriveMnemonic = (entropy: string): string => {
+	static deriveMnemonic = async (entropy: string): Promise<string> => {
 		const entropyBinary = Convert.hexStringToBinary(entropy)
 		const entropySha256Binary = Convert.hexStringToBinary(this.calculateChecksum(entropy))
 		const entropyBinaryWithChecksum = entropyBinary.concat(entropySha256Binary)
 
+		const { words } = await import('./words')
 		const mnemonicWords = []
 		for (let i = 0; i < entropyBinaryWithChecksum.length; i += 11) {
-			const nextWord = entropyBinaryWithChecksum.substring(i, i+11)
+			const nextWord: string = entropyBinaryWithChecksum.substring(i, i+11)
 			mnemonicWords.push(words[parseInt(nextWord, 2)])
 		}
 
@@ -83,12 +83,13 @@ export default class Bip39Mnemonic {
 	 * @param {string} mnemonic - The mnemonic phrase to validate
 	 * @returns {boolean} Is the mnemonic phrase valid
 	 */
-	static validateMnemonic = (mnemonic: string): boolean => {
+	static validateMnemonic = async (mnemonic: string): Promise<boolean> => {
 		const wordArray = Util.normalizeUTF8(mnemonic).split(' ')
 		if (wordArray.length % 3 !== 0) {
 			return false
 		}
 
+		const { words } = await import('./words')
 		const bits = wordArray.map((w: string) => {
 			const wordIndex = words.indexOf(w)
 			if (wordIndex === -1) {
@@ -130,7 +131,8 @@ export default class Bip39Mnemonic {
 	 *
 	 * @param {string} mnemonic Mnemonic phrase separated by spaces
 	 */
-	static mnemonicToLegacySeed = (mnemonic: string): string => {
+	static mnemonicToLegacySeed = async (mnemonic: string): Promise<string> => {
+		const { words } = await import('./words')
 		const wordArray = Util.normalizeUTF8(mnemonic).split(' ')
 		const bits = wordArray.map((w: string) => {
 			const wordIndex = words.indexOf(w)
@@ -153,18 +155,24 @@ export default class Bip39Mnemonic {
 	 *
 	 * @param {string} mnemonic Mnemonic phrase separated by spaces
 	 */
-	static mnemonicToSeed = (mnemonic: string, password: string): string => {
+	static mnemonicToSeed = (mnemonic: string, password: string): Promise<string> => {
 		const normalizedMnemonic = Util.normalizeUTF8(mnemonic)
 		const normalizedPassword = `mnemonic${Util.normalizeUTF8(password)}`
 
 		// password, salt, iterations, keylen, digest
-		const key: Buffer = pbkdf2Sync(
-			normalizedMnemonic,
-			normalizedPassword,
-			2048,
-			(512 / 8),
-			'sha512')
-		return key.toString('hex')
+		return new Promise((resolve, reject) => {
+			pbkdf2(
+				normalizedMnemonic,
+				normalizedPassword,
+				2048,
+				(512 / 8),
+				'sha512',
+				(err, key) => {
+					if (!!err) reject(err)
+					else resolve(key.toString('hex'))
+				}
+			)
+		})
 	}
 
 	private static randomHex = (length: number): string => {

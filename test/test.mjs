@@ -1,20 +1,20 @@
 'use strict'
 
-const { expect } = await import('chai')
+const { expect, should } = await import('chai')
 const { wallet, block, tools, box } = await import('../dist/index.js')
 
 // WARNING: Do not send any funds to the test vectors below
 describe('generate wallet test', () => {
 
-	it('should generate wallet with random entropy', () => {
-		const result = wallet.generate()
+	it('should generate wallet with random entropy', async () => {
+		const result = await wallet.generate()
 		expect(result).to.have.own.property('mnemonic')
 		expect(result).to.have.own.property('seed')
 		expect(result).to.have.own.property('accounts')
 	})
 
-	it('should generate the correct wallet with the given test vector', () => {
-		const result = wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c7970')
+	it('should generate the correct wallet with the given test vector', async () => {
+		const result = await wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c7970')
 		expect(result).to.have.own.property('mnemonic')
 		expect(result).to.have.own.property('seed')
 		expect(result).to.have.own.property('accounts')
@@ -25,9 +25,9 @@ describe('generate wallet test', () => {
 		expect(result.accounts[0].address).to.equal('nano_3chhhgy11k1msxtwdz4wd1i8e83fdkghzo3gpzor5mqyo5mrrjy79zpw1g34')
 	})
 
-	it('should generate the correct wallet with the given test vector and a seed password', () => {
+	it('should generate the correct wallet with the given test vector and a seed password', async () => {
 		// Using the same entropy as before, but a different password
-		const result = wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c7970', 'some password')
+		const result = await wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c7970', 'some password')
 		expect(result).to.have.own.property('mnemonic')
 		expect(result).to.have.own.property('seed')
 		expect(result).to.have.own.property('accounts')
@@ -45,13 +45,31 @@ describe('generate wallet test', () => {
 		expect(result.accounts[0].address).to.equal('nano_36jufjz4i91wcnnztdgab1aqh1b3fado9mynizy5a16z8payefpqo81zsshc')
 	})
 
-	it('should throw when given an entropy with an invalid length', () => {
-		expect(() => wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c797')).to.throw(Error)
-		expect(() => wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c79701')).to.throw(Error)
+	it('should throw when given an entropy with a length too short', async () => {
+		try {
+			await wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c797')
+			expect.fail()
+		} catch (err) {
+			expect(err).to.be.an('error')
+		}
 	})
 
-	it('should throw when given an entropy containing non-hex characters', () => {
-		expect(() => wallet.generate('6gaf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c7970')).to.throw(Error)
+	it('should throw when given an entropy with a length too long', async () => {
+		try {
+			await wallet.generate('6caf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c79701')
+			expect.fail()
+		} catch (err) {
+			expect(err).to.be.an('error')
+		}
+	})
+
+	it('should throw when given an entropy containing non-hex characters', async () => {
+		try {
+			await wallet.generate('6gaf5a42bb8074314aae20295975ece663be7aad945a73613d193b0cc41c7970')
+			expect.fail()
+		} catch (err) {
+			expect(err).to.be.an('error')
+		}
 	})
 
 })
@@ -59,8 +77,8 @@ describe('generate wallet test', () => {
 // Test vectors from https://docs.nano.org/integration-guides/key-management/ and elsewhere
 describe('import wallet with test vectors test', () => {
 
-	it('should successfully import a wallet with the official Nano test vectors mnemonic', () => {
-		const result = wallet.fromMnemonic(
+	it('should successfully import a wallet with the official Nano test vectors mnemonic', async () => {
+		const result = await wallet.fromMnemonic(
 			'edge defense waste choose enrich upon flee junk siren film clown finish luggage leader kid quick brick print evidence swap drill paddle truly occur',
 			'some password')
 		expect(result).to.have.own.property('mnemonic')
@@ -77,8 +95,8 @@ describe('import wallet with test vectors test', () => {
 		wallet.fromMnemonic('food define cancel major spoon trash cigar basic aim bless wolf win ability seek paddle bench seed century group they mercy address monkey cake')
 	})
 
-	it('should successfully import a wallet with the official Nano test vectors seed', () => {
-		const result = wallet.fromSeed('0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c')
+	it('should successfully import a wallet with the official Nano test vectors seed', async () => {
+		const result = await wallet.fromSeed('0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c')
 		expect(result).to.have.own.property('mnemonic')
 		expect(result).to.have.own.property('seed')
 		expect(result).to.have.own.property('accounts')
@@ -89,8 +107,8 @@ describe('import wallet with test vectors test', () => {
 		expect(result.accounts[0].address).to.equal('nano_1pu7p5n3ghq1i1p4rhmek41f5add1uh34xpb94nkbxe8g4a6x1p69emk8y1d')
 	})
 
-	it('should successfully import a legacy hex wallet with the a seed', () => {
-		const result = wallet.fromLegacySeed('0000000000000000000000000000000000000000000000000000000000000000')
+	it('should successfully import a legacy hex wallet with the a seed', async () => {
+		const result = await wallet.fromLegacySeed('0000000000000000000000000000000000000000000000000000000000000000')
 		expect(result).to.have.own.property('mnemonic')
 		expect(result).to.have.own.property('seed')
 		expect(result).to.have.own.property('accounts')
@@ -101,8 +119,8 @@ describe('import wallet with test vectors test', () => {
 		expect(result.accounts[0].address).to.equal('nano_3i1aq1cchnmbn9x5rsbap8b15akfh7wj7pwskuzi7ahz8oq6cobd99d4r3b7')
 	})
 
-	it('should successfully import legacy hex accounts with the a seed', () => {
-		const accounts = wallet.legacyAccounts('0000000000000000000000000000000000000000000000000000000000000000', 0, 3)
+	it('should successfully import legacy hex accounts with the a seed', async () => {
+		const accounts = await wallet.legacyAccounts('0000000000000000000000000000000000000000000000000000000000000000', 0, 3)
 		expect(accounts[0]).to.have.own.property('accountIndex')
 		expect(accounts[0]).to.have.own.property('privateKey')
 		expect(accounts[0]).to.have.own.property('publicKey')
@@ -114,23 +132,41 @@ describe('import wallet with test vectors test', () => {
 		expect(accounts[2].address).to.equal('nano_1dzcca9ycmtx3q79mocmu95zdduxptp3gp5fqkmb1ownscpweggzah8cb4rb')
 	})
 
-	it('should throw when given a seed with an invalid length', () => {
-		expect(() => wallet.generate('0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310')).to.throw(Error)
-		expect(() => wallet.generate('0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310cd')).to.throw(Error)
+	it('should throw when given a seed with a length too short', async () => {
+		try {
+			await wallet.generate('0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310')
+			expect.fail()
+		} catch (err) {
+			expect(err).to.be.an('error')
+		}
 	})
 
-	it('should throw when given a seed containing non-hex characters', () => {
-		expect(() => wallet.generate('0gc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c')).to.throw(Error)
+	it('should throw when given a seed with a length too long', async () => {
+		try {
+			await wallet.generate('0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310cd')
+			expect.fail()
+		} catch (err) {
+			expect(err).to.be.an('error')
+		}
 	})
 
-	it('should successfully create a new legacy wallet and get the same result from importing one from the mnemonic', () => {
-		const result = wallet.generateLegacy('BE3E51EE51BAB11950B2495013512FEB110D9898B4137DA268709621CE2862F4')
+	it('should throw when given a seed containing non-hex characters', async () => {
+		try {
+			await wallet.generate('0gc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c')
+			expect.fail()
+		} catch (err) {
+			expect(err).to.be.an('error')
+		}
+	})
+
+	it('should successfully create a new legacy wallet and get the same result from importing one from the mnemonic', async () => {
+		const result = await wallet.generateLegacy('BE3E51EE51BAB11950B2495013512FEB110D9898B4137DA268709621CE2862F4')
 		expect(result).to.have.own.property('mnemonic')
 		expect(result).to.have.own.property('seed')
 		expect(result).to.have.own.property('accounts')
 		expect(result.mnemonic).to.equal('sail verb knee pet prison million drift empty exotic once episode stomach awkward slush glare list laundry battle bring clump brother before mesh pair')
 
-		const imported = wallet.fromLegacyMnemonic(result.mnemonic)
+		const imported = await wallet.fromLegacyMnemonic(result.mnemonic)
 		expect(imported.mnemonic).to.equal(result.mnemonic)
 		expect(imported.seed.toUpperCase()).to.equal(result.seed)
 		expect(imported.accounts[0].privateKey).to.equal(result.accounts[0].privateKey)
@@ -140,8 +176,8 @@ describe('import wallet with test vectors test', () => {
 
 describe('derive more accounts from the same seed test', () => {
 
-	it('should derive accounts from the given seed', () => {
-		const result = wallet.accounts(
+	it('should derive accounts from the given seed', async () => {
+		const result = await wallet.accounts(
 			'0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c',
 			0, 14)
 		expect(result.length).to.equal(15)
@@ -152,7 +188,7 @@ describe('derive more accounts from the same seed test', () => {
 		expect(result[14].publicKey).to.equal('f93a61018e07825a095e8cf7bdce9242e9c12c5c41a55de597a2be93fa41306b')
 		expect(result[14].address).to.equal('nano_3ybte61rw3w4da6ox59qqq9b6iqbr6p7rif7dqkshaoykhx64e5dbp4o1ua1')
 
-		const result2 = wallet.accounts(
+		const result2 = await wallet.accounts(
 			'0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c',
 			1000000, 1000099)
 		expect(result2.length).to.equal(100)
@@ -261,8 +297,8 @@ describe('unit conversion tests', () => {
 
 describe('Signer tests', () => {
 
-	before(function() {
-		this.testWallet = wallet.generate()
+	before(async function() {
+		this.testWallet = await wallet.generate()
 	})
 
 	// Private key: 3be4fc2ef3f3b7374e6fc4fb6e7bb153f8a2998b3b3dab50853eabe128024143
@@ -331,10 +367,10 @@ describe('Signer tests', () => {
 
 describe('Box tests', () => {
 
-	before(function() {
+	before(async function() {
 		this.message = 'The quick brown fox jumps over the lazy dog 🔥'
-		this.bob = wallet.generate()
-		this.alice = wallet.generateLegacy()
+		this.bob = await wallet.generate()
+		this.alice = await wallet.generateLegacy()
 	})
 
 	it('should encrypt and decrypt a message from bob to alice', function() {
@@ -357,30 +393,30 @@ describe('Box tests', () => {
 		expect(this.message).to.equal(decrypted)
 	})
 
-	it('should fail to decrypt with wrong public key in encryption', function() {
+	it('should fail to decrypt with wrong public key in encryption', async function() {
 		// Encrypt with wrong public key
-		const aliceAccounts = wallet.legacyAccounts(this.alice.seed, 1, 2)
+		const aliceAccounts = await wallet.legacyAccounts(this.alice.seed, 1, 2)
 		const encrypted = box.encrypt(this.message, aliceAccounts[0].address, this.bob.accounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, this.bob.accounts[0].address, this.alice.accounts[0].privateKey)).to.throw()
 	})
 
-	it('should fail to decrypt with wrong public key in decryption', function() {
+	it('should fail to decrypt with wrong public key in decryption', async function() {
 		// Decrypt with wrong public key
-		const bobAccounts = wallet.accounts(this.bob.seed, 1, 2)
+		const bobAccounts = await wallet.accounts(this.bob.seed, 1, 2)
 		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, bobAccounts[0].address, this.alice.accounts[0].privateKey)).to.throw()
 	})
 
-	it('should fail to decrypt with wrong private key in encryption', function() {
+	it('should fail to decrypt with wrong private key in encryption', async function() {
 		// Encrypt with wrong public key
-		const bobAccounts = wallet.accounts(this.bob.seed, 1, 2)
+		const bobAccounts = await wallet.accounts(this.bob.seed, 1, 2)
 		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, bobAccounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, this.bob.accounts[0].address, this.alice.accounts[0].privateKey)).to.throw()
 	})
 
-	it('should fail to decrypt with wrong private key in decryption', function() {
+	it('should fail to decrypt with wrong private key in decryption', async function() {
 		// Encrypt with wrong public key
-		const aliceAccounts = wallet.legacyAccounts(this.alice.seed, 1, 2)
+		const aliceAccounts = await wallet.legacyAccounts(this.alice.seed, 1, 2)
 		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, this.bob.accounts[0].address, aliceAccounts[0].privateKey)).to.throw()
 	})
