@@ -190,7 +190,7 @@ describe('derive more accounts from the same seed test', () => {
 
 		const result2 = await wallet.accounts(
 			'0dc285fde768f7ff29b66ce7252d56ed92fe003b605907f7a4f683c3dc8586d34a914d3c71fc099bb38ee4a59e5b081a3497b7a323e90cc68f67b5837690310c',
-			1000000, 1000099)
+			1000000000, 1000000099)
 		expect(result2.length).to.equal(100)
 	})
 
