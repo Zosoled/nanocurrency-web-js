@@ -373,10 +373,10 @@ describe('Box tests', () => {
 		this.alice = await wallet.generateLegacy()
 	})
 
-	it('should encrypt and decrypt a message from bob to alice', function() {
-		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
-		const encrypted2 = box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
-		const encrypted3 = box.encrypt(this.message + 'asd', this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
+	it('should encrypt and decrypt a message from bob to alice', async function() {
+		const encrypted = await box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
+		const encrypted2 = await box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
+		const encrypted3 = await box.encrypt(this.message + 'asd', this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
 
 		// Just to be safe
 		expect(this.message).to.not.equal(encrypted)
@@ -387,8 +387,8 @@ describe('Box tests', () => {
 		expect(this.message).to.equal(decrypted)
 	})
 
-	it('should encrypt and decrypt a message from alice to bob', function() {
-		const encrypted = box.encrypt(this.message, this.bob.accounts[0].address, this.alice.accounts[0].privateKey)
+	it('should encrypt and decrypt a message from alice to bob', async function() {
+		const encrypted = await box.encrypt(this.message, this.bob.accounts[0].address, this.alice.accounts[0].privateKey)
 		const decrypted = box.decrypt(encrypted, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
 		expect(this.message).to.equal(decrypted)
 	})
@@ -396,28 +396,28 @@ describe('Box tests', () => {
 	it('should fail to decrypt with wrong public key in encryption', async function() {
 		// Encrypt with wrong public key
 		const aliceAccounts = await wallet.legacyAccounts(this.alice.seed, 1, 2)
-		const encrypted = box.encrypt(this.message, aliceAccounts[0].address, this.bob.accounts[0].privateKey)
+		const encrypted = await box.encrypt(this.message, aliceAccounts[0].address, this.bob.accounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, this.bob.accounts[0].address, this.alice.accounts[0].privateKey)).to.throw()
 	})
 
 	it('should fail to decrypt with wrong public key in decryption', async function() {
 		// Decrypt with wrong public key
 		const bobAccounts = await wallet.accounts(this.bob.seed, 1, 2)
-		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
+		const encrypted = await box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, bobAccounts[0].address, this.alice.accounts[0].privateKey)).to.throw()
 	})
 
 	it('should fail to decrypt with wrong private key in encryption', async function() {
 		// Encrypt with wrong public key
 		const bobAccounts = await wallet.accounts(this.bob.seed, 1, 2)
-		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, bobAccounts[0].privateKey)
+		const encrypted = await box.encrypt(this.message, this.alice.accounts[0].address, bobAccounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, this.bob.accounts[0].address, this.alice.accounts[0].privateKey)).to.throw()
 	})
 
 	it('should fail to decrypt with wrong private key in decryption', async function() {
 		// Encrypt with wrong public key
 		const aliceAccounts = await wallet.legacyAccounts(this.alice.seed, 1, 2)
-		const encrypted = box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
+		const encrypted = await box.encrypt(this.message, this.alice.accounts[0].address, this.bob.accounts[0].privateKey)
 		expect(() => box.decrypt(encrypted, this.bob.accounts[0].address, aliceAccounts[0].privateKey)).to.throw()
 	})
 

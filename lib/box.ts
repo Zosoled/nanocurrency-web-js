@@ -1,5 +1,3 @@
-import { randomBytes } from 'crypto'
-
 import Ed25519 from './ed25519'
 import NanoAddress from './nano-address'
 import Convert from './util/convert'
@@ -9,7 +7,7 @@ export default class Box {
 
 	static readonly NONCE_LENGTH = 24
 
-	static encrypt(message: string, address: string, privateKey: string) {
+	static async encrypt(message: string, address: string, privateKey: string) {
 		if (!message) {
 			throw new Error('No message to encrypt')
 		}
@@ -20,6 +18,7 @@ export default class Box {
 			publicKey,
 		})
 
+		const { randomBytes } = await import ('crypto')
 		const nonce = Convert.hex2ab(randomBytes(this.NONCE_LENGTH).toString('hex'))
 		const encrypted = new Curve25519().box(
 			Convert.decodeUTF8(message),
@@ -63,5 +62,4 @@ export default class Box {
 
 		return Convert.encodeUTF8(decrypted)
 	}
-
 }

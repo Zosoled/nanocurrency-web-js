@@ -17,8 +17,8 @@ const box = {
 	 * @param {string} privateKey private key of the sender
 	 * @returns {string} encrypted message encoded in Base64
 	 */
-	encrypt: (message: string, address: string, privateKey: string): string => {
-		return Box.encrypt(message, address, privateKey)
+	encrypt: async (message: string, address: string, privateKey: string): Promise<string> => {
+		return await Box.encrypt(message, address, privateKey)
 	},
 
 	/**
