@@ -12,17 +12,12 @@ export default class Bip39Mnemonic {
 	 * @returns {MnemonicSeed} The mnemonic phrase and a seed derived from the (generated) entropy
 	 */
 	static createWallet = async (entropy: string, password: string): Promise<MnemonicSeed> => {
-		if (entropy) {
-			if (entropy.length !== 64) {
+		entropy ??= await this.randomHex(32)
+		if (entropy.length !== 64 ) {
 				throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
 			}
 			if (!/^[0-9a-fA-F]+$/i.test(entropy)) {
 				throw new Error('Entropy is not a valid hexadecimal string')
-			}
-		}
-
-		if (!entropy) {
-			entropy = this.randomHex(32)
 		}
 
 		const mnemonic = await this.deriveMnemonic(entropy)
@@ -41,17 +36,12 @@ export default class Bip39Mnemonic {
 	 * @returns {MnemonicSeed} The mnemonic phrase and a generated seed if none provided
 	 */
 	static createLegacyWallet = async (seed?: string): Promise<MnemonicSeed> => {
-		if (seed) {
+		seed ??= await this.randomHex(32)
 			if (seed.length !== 64) {
 				throw new Error('Invalid seed length, must be a 32 bit hexadecimal string')
 			}
 			if (!/^[0-9a-fA-F]+$/i.test(seed)) {
 				throw new Error('Seed is not a valid hexadecimal string')
-			}
-		}
-
-		if (!seed) {
-			seed = this.randomHex(32)
 		}
 
 		const mnemonic = await this.deriveMnemonic(seed)
