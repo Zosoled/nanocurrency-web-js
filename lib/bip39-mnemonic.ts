@@ -1,5 +1,3 @@
-import { createHash, pbkdf2, randomBytes } from 'crypto'
-
 import Convert from './util/convert'
 import Util from './util/util'
 
@@ -14,10 +12,10 @@ export default class Bip39Mnemonic {
 	static createWallet = async (entropy: string, password: string): Promise<MnemonicSeed> => {
 		entropy ??= await this.randomHex(32)
 		if (entropy.length !== 64 ) {
-				throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
-			}
-			if (!/^[0-9a-fA-F]+$/i.test(entropy)) {
-				throw new Error('Entropy is not a valid hexadecimal string')
+			throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
+		}
+		if (!/^[0-9a-fA-F]+$/i.test(entropy)) {
+			throw new Error('Entropy is not a valid hexadecimal string')
 		}
 
 		const mnemonic = await this.deriveMnemonic(entropy)
@@ -37,11 +35,11 @@ export default class Bip39Mnemonic {
 	 */
 	static createLegacyWallet = async (seed?: string): Promise<MnemonicSeed> => {
 		seed ??= await this.randomHex(32)
-			if (seed.length !== 64) {
-				throw new Error('Invalid seed length, must be a 32 bit hexadecimal string')
-			}
-			if (!/^[0-9a-fA-F]+$/i.test(seed)) {
-				throw new Error('Seed is not a valid hexadecimal string')
+		if (seed.length !== 64) {
+			throw new Error('Invalid seed length, must be a 32 bit hexadecimal string')
+		}
+		if (!/^[0-9a-fA-F]+$/i.test(seed)) {
+			throw new Error('Seed is not a valid hexadecimal string')
 		}
 
 		const mnemonic = await this.deriveMnemonic(seed)
@@ -166,19 +164,25 @@ export default class Bip39Mnemonic {
 		})
 	}
 
-	private static randomHex = (length: number): string => {
-		return randomBytes(length).toString('hex')
+	private static randomHex = async (length: number): Promise<string> => {
+		const { randomBytes } = await import('crypto')
+		return new Promise((resolve, reject) => {
+			randomBytes(length, (err, buf) => {
+				if (!!err) reject(err)
+				else resolve(buf.toString('hex'))
+			})
+		})
 	}
 
 	private static calculateChecksum = async (entropyHex: string): Promise<string> => {
 		const { createHash } = await import('crypto')
 		return new Promise((resolve, reject) => {
 			try {
-		const entropySha256 = createHash('sha256').update(entropyHex, 'hex').digest('hex')
+				const entropySha256 = createHash('sha256').update(entropyHex, 'hex').digest('hex')
 				resolve(entropySha256.substring(0, entropySha256.length / 32))
 			} catch (err) {
 				reject(err)
-	}
+			}
 		})
 	}
 }
