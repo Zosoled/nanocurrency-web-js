@@ -1,4 +1,4 @@
-import Box from './lib/box'
+import Box from './box'
 
 const box = {
 

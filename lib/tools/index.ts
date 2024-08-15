@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 
-import AddressImporter from './lib/address-importer'
-import { BlockData } from './lib/block-signer'
-import NanoAddress from './lib/nano-address'
-import NanoConverter from './lib/nano-converter'
-import Signer from './lib/signer'
-import Convert from './lib/util/convert'
+import AddressImporter from '../address-importer'
+import { BlockData } from '../block-signer'
+import NanoAddress from '../nano-address'
+import NanoConverter from '../nano-converter'
+import Signer from '../signer'
+import Convert from '../util/convert'
 
 const tools = {
 

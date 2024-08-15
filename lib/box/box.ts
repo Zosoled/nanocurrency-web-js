@@ -1,7 +1,7 @@
-import Ed25519 from './ed25519'
-import NanoAddress from './nano-address'
-import Convert from './util/convert'
-import Curve25519 from './util/curve25519'
+import Ed25519 from '../ed25519'
+import NanoAddress from '../nano-address'
+import Convert from '../util/convert'
+import Curve25519 from '../util/curve25519'
 
 export default class Box {
 
