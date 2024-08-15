@@ -114,11 +114,12 @@ export default class AddressImporter {
 	 * @param {number} to - The end index of private keys to derive to
 	 */
 	private static accounts = async (seed: string, from: number, to: number): Promise<Account[]> => {
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 			try {
 				const accounts = []
 				for (let i = from; i <= to; i++) {
-					const privateKey = Bip32KeyDerivation.derivePath(`44'/165'/${i}'`, seed).key
+					const path = await Bip32KeyDerivation.derivePath(`44'/165'/${i}'`, seed)
+					const privateKey = path.key
 					const keyPair = new Ed25519().generateKeys(privateKey)
 					const address = NanoAddress.deriveAddress(keyPair.publicKey)
 					accounts.push({
@@ -162,7 +163,7 @@ export default class AddressImporter {
 }
 
 export interface Wallet {
-	mnemonic: string
+	mnemonic?: string
 	seed: string
 	accounts: Account[]
 }
