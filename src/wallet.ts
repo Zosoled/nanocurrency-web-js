@@ -1,5 +1,5 @@
-import AddressGenerator from '../address-generator'
-import AddressImporter, { Account, Wallet } from '../address-importer'
+import AddressGenerator from './lib/address-generator.js'
+import AddressImporter, { Account, Wallet } from './lib/address-importer.js'
 
 const wallet = {
 

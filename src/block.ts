@@ -1,4 +1,4 @@
-import BlockSigner, { ReceiveBlock, RepresentativeBlock, SendBlock, SignedBlock } from '../block-signer'
+import BlockSigner, { ReceiveBlock, RepresentativeBlock, SendBlock, SignedBlock } from './lib/block-signer.js'
 
 const block = {
 

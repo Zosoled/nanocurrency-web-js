@@ -1,9 +1,9 @@
-import BigNumber from 'bignumber.js'
+import { BigNumber } from 'bignumber.js'
 
-import NanoAddress from './nano-address'
-import NanoConverter from './nano-converter'
-import Signer from './signer'
-import Convert from './util/convert'
+import NanoAddress from './nano-address.js'
+import NanoConverter from './nano-converter.js'
+import Signer from './signer.js'
+import Convert from './convert.js'
 
 export default class BlockSigner {
 

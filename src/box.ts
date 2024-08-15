@@ -1,4 +1,4 @@
-import Box from './box'
+import Box from './lib/nano-box.js'
 
 const box = {
 

@@ -1,9 +1,9 @@
-import Bip32KeyDerivation from './bip32-key-derivation'
-import Bip39Mnemonic from './bip39-mnemonic'
-import Ed25519 from './ed25519'
-import NanoAddress from './nano-address'
-import Signer from './signer'
-import Convert from './util/convert'
+import Bip32KeyDerivation from './bip32-key-derivation.js'
+import Bip39Mnemonic from './bip39-mnemonic.js'
+import Ed25519 from './ed25519.js'
+import NanoAddress from './nano-address.js'
+import Signer from './signer.js'
+import Convert from './convert.js'
 
 export default class AddressImporter {
 

@@ -1,5 +1,5 @@
-import AddressImporter, { Wallet } from './address-importer'
-import Bip39Mnemonic from './bip39-mnemonic'
+import AddressImporter, { Wallet } from './address-importer.js'
+import Bip39Mnemonic from './bip39-mnemonic.js'
 
 export default class AddressGenerator {
 
@@ -25,5 +25,4 @@ export default class AddressGenerator {
 		const mnemonicSeed = await Bip39Mnemonic.createLegacyWallet(seed)
 		return await AddressImporter.fromLegacySeed(mnemonicSeed.seed, 0, 0, mnemonicSeed.mnemonic)
 	}
-
 }

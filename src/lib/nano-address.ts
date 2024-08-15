@@ -1,7 +1,7 @@
 //@ts-ignore
 import { blake2b } from 'blakejs'
 
-import Convert from './util/convert'
+import Convert from './convert.js'
 
 export default class NanoAddress {
 

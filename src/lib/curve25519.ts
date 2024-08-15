@@ -1,7 +1,7 @@
 //@ts-ignore
 import { blake2b } from 'blakejs'
 
-import Util from './util'
+import Util from './util.js'
 
 /**
  * Derived from:

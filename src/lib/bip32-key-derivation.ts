@@ -1,4 +1,4 @@
-import Convert from './util/convert'
+import Convert from './convert.js'
 
 const ED25519_CURVE = 'ed25519 seed'
 const HARDENED_OFFSET = 0x80000000

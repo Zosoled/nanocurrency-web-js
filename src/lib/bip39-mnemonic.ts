@@ -1,5 +1,5 @@
-import Convert from './util/convert'
-import Util from './util/util'
+import Convert from './convert.js'
+import Util from './util.js'
 
 export default class Bip39Mnemonic {
 
@@ -56,7 +56,7 @@ export default class Bip39Mnemonic {
 		const entropySha256Binary = Convert.hexStringToBinary(await this.calculateChecksum(entropy))
 		const entropyBinaryWithChecksum = entropyBinary.concat(entropySha256Binary)
 
-		const { Bip39Words } = await import('./bip39-words')
+		const { Bip39Words } = await import('./bip39-words.js')
 		const mnemonicWords = []
 		for (let i = 0; i < entropyBinaryWithChecksum.length; i += 11) {
 			const nextWord: string = entropyBinaryWithChecksum.substring(i, i+11)
@@ -78,7 +78,7 @@ export default class Bip39Mnemonic {
 			return false
 		}
 
-		const { Bip39Words } = await import('./bip39-words')
+		const { Bip39Words } = await import('./bip39-words.js')
 		const bits = mnemonicArray.map(word => {
 			const wordIndex = Bip39Words.indexOf(word)
 			if (wordIndex === -1) {
@@ -118,7 +118,7 @@ export default class Bip39Mnemonic {
 	 * @param {string} mnemonic Mnemonic phrase separated by spaces
 	 */
 	static mnemonicToLegacySeed = async (mnemonic: string): Promise<string> => {
-		const { Bip39Words } = await import('./bip39-words')
+		const { Bip39Words } = await import('./bip39-words.js')
 		const wordArray = Util.normalizeUTF8(mnemonic).split(' ')
 		const bits = wordArray.map((w: string) => {
 			const wordIndex = Bip39Words.indexOf(w)

@@ -1,9 +1,9 @@
-//@ts-ignore
-import { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
+import blakejs from 'blakejs'
+const { blake2b, blake2bFinal, blake2bInit, blake2bUpdate } = blakejs
 
-import Convert from './util/convert'
-import Curve25519 from './util/curve25519'
-import Util from './util/util'
+import Convert from './convert.js'
+import Curve25519 from './curve25519.js'
+import Util from './util.js'
 
 export default class Ed25519 {
 
