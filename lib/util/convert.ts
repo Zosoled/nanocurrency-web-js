@@ -87,7 +87,7 @@ export default class Convert {
 	 *
 	 * @param {String} str Decimal to be converted
 	 * @param {Number} bytes Length of the output to be padded
-	 * @returns Hexadecimal representation of the inputed decimal
+	 * @returns Hexadecimal string representation of the inputed decimal
 	 */
 	static dec2hex = (str: number | string, bytes: number): string => {
 		const decimals = str.toString().split('')

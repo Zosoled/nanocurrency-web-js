@@ -148,7 +148,7 @@ export default class Bip39Mnemonic {
 		const normalizedPassword = `mnemonic${Util.normalizeUTF8(password)}`
 
 		const { pbkdf2 } = await import('crypto')
-		// password, salt, iterations, keylen, digest
+		// password, salt, iterations, keylen, digest, callback
 		return new Promise((resolve, reject) => {
 			pbkdf2(
 				normalizedMnemonic,

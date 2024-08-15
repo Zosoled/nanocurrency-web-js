@@ -61,7 +61,7 @@ export default class AddressImporter {
 	 * @param {string} seed - The seed to import the wallet from
 	 * @param {number} [from] - (Optional) The start index of the private keys to derive from
 	 * @param {number} [to] - (Optional) The end index of the private keys to derive to
-	 * @returns {Wallet} The wallet derived from the mnemonic phrase
+	 * @returns {Wallet} The wallet derived from the seed
 	 */
 	static fromSeed = async (seed: string, from = 0, to = 0): Promise<Wallet> => {
 		if (seed.length !== 128) {
@@ -98,6 +98,7 @@ export default class AddressImporter {
 		}
 
 		const accounts = await this.legacyAccounts(seed, from, to)
+
 		return {
 			mnemonic: mnemonic || await Bip39Mnemonic.deriveMnemonic(seed),
 			seed,
