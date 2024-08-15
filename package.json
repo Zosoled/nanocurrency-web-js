@@ -25,9 +25,12 @@
 	],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
+	"files": [
+		"/dist"
+	],
 	"unpkg": "dist/index.min.js",
 	"scripts": {
-		"build": "rm -rf dist && tsc && webpack",
+		"build": "rm -rf dist && tsc",
 		"test": "mocha --reporter spec"
 	},
 	"dependencies": {
@@ -46,5 +49,6 @@
 		"typescript": "^5.5.4",
 		"webpack": "^5.93.0",
 		"webpack-cli": "^5.1.4"
-	}
+	},
+	"type": "module"
 }

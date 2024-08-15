@@ -1,19 +1,20 @@
 {
 	"compilerOptions": {
-		"target": "es5",
-		"module": "commonjs",
+		"target": "ES2022",
+		"module": "Node16",
+    "moduleResolution": "Node16",
 		"declaration": true,
 		"outDir": "./dist",
 		"strict": true,
+    "noEmit": false,
 		"esModuleInterop": true,
 		"downlevelIteration": true,
 		"strictNullChecks": true,
 		"forceConsistentCasingInFileNames": true,
-		"types": [
-			"node"
-		],
-		"lib": [
-			"es2017"
-		]
-	}
+		"types": ["node"],
+    "lib": ["DOM"]
+	},
+  "include": [
+    "src/**/*"
+  ]
 }
