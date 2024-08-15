@@ -55,11 +55,11 @@ export default class Bip39Mnemonic {
 		const entropySha256Binary = Convert.hexStringToBinary(await this.calculateChecksum(entropy))
 		const entropyBinaryWithChecksum = entropyBinary.concat(entropySha256Binary)
 
-		const { words } = await import('./words')
+		const { Bip39Words } = await import('./bip39-words')
 		const mnemonicWords = []
 		for (let i = 0; i < entropyBinaryWithChecksum.length; i += 11) {
 			const nextWord: string = entropyBinaryWithChecksum.substring(i, i+11)
-			mnemonicWords.push(words[parseInt(nextWord, 2)])
+			mnemonicWords.push(Bip39Words[parseInt(nextWord, 2)])
 		}
 
 		return mnemonicWords.join(' ')
@@ -72,14 +72,14 @@ export default class Bip39Mnemonic {
 	 * @returns {boolean} Is the mnemonic phrase valid
 	 */
 	static validateMnemonic = async (mnemonic: string): Promise<boolean> => {
-		const wordArray = Util.normalizeUTF8(mnemonic).split(' ')
-		if (wordArray.length % 3 !== 0) {
+		const mnemonicArray = Util.normalizeUTF8(mnemonic).split(' ')
+		if (mnemonicArray.length % 3 !== 0) {
 			return false
 		}
 
-		const { words } = await import('./words')
-		const bits = wordArray.map((w: string) => {
-			const wordIndex = words.indexOf(w)
+		const { Bip39Words } = await import('./bip39-words')
+		const bits = mnemonicArray.map(word => {
+			const wordIndex = Bip39Words.indexOf(word)
 			if (wordIndex === -1) {
 				return false
 			}
@@ -120,10 +120,10 @@ export default class Bip39Mnemonic {
 	 * @param {string} mnemonic Mnemonic phrase separated by spaces
 	 */
 	static mnemonicToLegacySeed = async (mnemonic: string): Promise<string> => {
-		const { words } = await import('./words')
+		const { Bip39Words } = await import('./bip39-words')
 		const wordArray = Util.normalizeUTF8(mnemonic).split(' ')
 		const bits = wordArray.map((w: string) => {
-			const wordIndex = words.indexOf(w)
+			const wordIndex = Bip39Words.indexOf(w)
 			if (wordIndex === -1) {
 				return false
 			}

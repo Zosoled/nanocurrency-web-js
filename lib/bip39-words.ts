@@ -1,4 +1,4 @@
-export const words: string[] = [
+export const Bip39Words: string[] = [
 	'abandon',
 	'ability',
 	'able',
@@ -2047,7 +2047,4 @@ export const words: string[] = [
 	'zero',
 	'zone',
 	'zoo',
-
 ]
-
-export default words
