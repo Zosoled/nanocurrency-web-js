@@ -125,9 +125,13 @@ export default class Ed25519 {
 	 * @returns {KeyPair} keyPair Curve25519 keypair
 	 */
 	convertKeys(keyPair: KeyPair): KeyPair {
-		const publicKey = Convert.ab2hex(this.curve.convertEd25519PublicKeyToCurve25519(Convert.hex2ab(keyPair.publicKey)))
-		if (!publicKey) {
-			return null
+		const ab: (Uint8Array | null) = this.curve.convertEd25519PublicKeyToCurve25519(Convert.hex2ab(keyPair.publicKey))
+		if (ab == null) {
+			throw new Error('Invalid key pair')
+		}
+		const publicKey = Convert.ab2hex(ab) ?? ''
+		if (publicKey === '') {
+			throw new Error('Invalid key pair')
 		}
 		const privateKey = Convert.ab2hex(this.curve.convertEd25519SecretKeyToCurve25519(Convert.hex2ab(keyPair.privateKey)))
 		return {

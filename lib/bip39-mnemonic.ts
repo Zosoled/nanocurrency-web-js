@@ -9,7 +9,8 @@ export default class Bip39Mnemonic {
 	 * @param {string} [entropy] - (Optional) the entropy to use instead of generating
 	 * @returns {MnemonicSeed} The mnemonic phrase and a seed derived from the (generated) entropy
 	 */
-	static createWallet = async (entropy: string, password: string): Promise<MnemonicSeed> => {
+	static createWallet = async (entropy?: string, password?: string): Promise<MnemonicSeed> => {
+		password ??= ''
 		entropy ??= await this.randomHex(32)
 		if (entropy.length !== 64 ) {
 			throw new Error('Invalid entropy length, must be a 32 bit hexadecimal string')
@@ -89,17 +90,14 @@ export default class Bip39Mnemonic {
 		const dividerIndex = Math.floor(bits.length / 33) * 32
 		const entropyBits = bits.slice(0, dividerIndex)
 		const checksumBits = bits.slice(dividerIndex)
-		const entropyBytes = entropyBits.match(/(.{1,8})/g).map((bin: string) => parseInt(bin, 2))
+		const entropyBytes = entropyBits.match(/(.{1,8})/g)?.map((bin: string) => parseInt(bin, 2))
 
-		if (entropyBytes.length < 16) {
-			return false
-		}
-
-		if (entropyBytes.length > 32) {
-			return false
-		}
-
-		if (entropyBytes.length % 4 !== 0) {
+		if (
+			entropyBytes == null
+			|| entropyBytes.length < 16
+			|| entropyBytes.length > 32
+			|| entropyBytes.length % 4 !== 0
+		) {
 			return false
 		}
 
@@ -132,7 +130,10 @@ export default class Bip39Mnemonic {
 
 		const dividerIndex = Math.floor(bits.length / 33) * 32
 		const entropyBits = bits.slice(0, dividerIndex)
-		const entropyBytes = entropyBits.match(/(.{1,8})/g).map((bin: string) => parseInt(bin, 2))
+		const entropyBytes = entropyBits.match(/(.{1,8})/g)?.map((bin: string) => parseInt(bin, 2))
+		if (entropyBytes == null) {
+			throw new Error('Invalid mnemonic phrase')
+		}
 		const entropyHex = Convert.bytesToHexString(entropyBytes)
 
 		return entropyHex

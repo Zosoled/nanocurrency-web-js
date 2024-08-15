@@ -110,7 +110,7 @@ export default class NanoAddress {
 		const expectedChecksum = address.slice(-8)
 		const publicKey = this.stripAddress(address)
 		const publicKeyBuffer = this.decodeNanoBase32(publicKey)
-		const actualChecksumBuffer = blake2b(publicKeyBuffer, null, 5).reverse()
+		const actualChecksumBuffer = blake2b(publicKeyBuffer, undefined, 5).reverse()
 		const actualChecksum = this.encodeNanoBase32(actualChecksumBuffer)
 
 		return expectedChecksum === actualChecksum

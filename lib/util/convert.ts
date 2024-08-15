@@ -97,7 +97,8 @@ export default class Convert {
 		let s: number
 
 		while (decimals.length) {
-			s = 1 * +decimals.shift()
+			const d = decimals.shift() ?? 0
+			s = 1 * +d
 			for (i = 0; s || i < sum.length; i++) {
 				s += (sum[i] || 0) * 10
 				sum[i] = s % 16
@@ -106,7 +107,7 @@ export default class Convert {
 		}
 
 		while (sum.length) {
-			hex.push(sum.pop().toString(16))
+			hex.push(sum.pop()?.toString(16))
 		}
 
 		let joined = hex.join('')
