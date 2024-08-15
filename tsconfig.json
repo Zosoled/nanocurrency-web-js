@@ -1,20 +1,18 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
-		"module": "Node16",
-    "moduleResolution": "Node16",
+		"target": "ESNext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"declaration": true,
 		"outDir": "./dist",
 		"strict": true,
-    "noEmit": false,
+		"noEmit": false,
 		"esModuleInterop": true,
 		"downlevelIteration": true,
 		"strictNullChecks": true,
-		"forceConsistentCasingInFileNames": true,
-		"types": ["node"],
-    "lib": ["DOM"]
+		"forceConsistentCasingInFileNames": true
 	},
-  "include": [
-    "src/**/*"
-  ]
+	"include": [
+		"src/**/*"
+	]
 }
