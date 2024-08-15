@@ -7,7 +7,7 @@
 		"strict": true,
 		"esModuleInterop": true,
 		"downlevelIteration": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
 		"forceConsistentCasingInFileNames": true,
 		"types": [
 			"node"
