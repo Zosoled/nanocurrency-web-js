@@ -1,11 +1,6 @@
-import wallet from './wallet'
-import block from './block'
-import tools from './tools'
-import box from './box'
+import wallet from './lib/wallet'
+import block from './lib/block'
+import tools from './lib/tools'
+import box from './lib/box'
 
-export {
-	wallet,
-	block,
-	tools,
-	box,
-}
+export { wallet, block, tools, box }
