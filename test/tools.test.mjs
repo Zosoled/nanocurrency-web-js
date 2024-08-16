@@ -3,6 +3,7 @@
 
 'use strict'
 
+import { describe, it, before } from 'node:test'
 import { describe, it } from 'node:test'
 import { wallet, block, tools } from '../dist/index.js'
 
