@@ -4,6 +4,7 @@
 'use strict'
 
 import { describe, it } from 'node:test'
+import { strict as assert } from 'assert'
 import { block } from '../dist/index.js'
 
 // WARNING: Do not send any funds to the test vectors below

@@ -4,6 +4,7 @@
 'use strict'
 
 import { describe, it, before } from 'node:test'
+import { strict as assert } from 'assert'
 import { wallet, box } from '../dist/index.js'
 
 describe('Box tests', () => {
