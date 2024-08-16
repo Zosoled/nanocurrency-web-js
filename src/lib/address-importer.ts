@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import Bip32KeyDerivation from './bip32-key-derivation.js'
 import Bip39Mnemonic from './bip39-mnemonic.js'
 import Ed25519 from './ed25519.js'

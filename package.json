@@ -1,51 +1,54 @@
 {
-	"name": "nanocurrency-web",
-	"version": "2.0.0",
-	"description": "Toolkit for Nano cryptocurrency client side offline integrations",
-	"author": "Miro Metsänheimo <miro@metsanheimo.fi>",
-	"license": "MIT",
-	"homepage": "https://github.com/numsu/nanocurrency-web-js#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/numsu/nanocurrency-web-js.git"
-	},
-	"bugs": {
-		"url": "https://github.com/numsu/nanocurrency-web-js/issues"
-	},
+	"name": "xno",
+	"version": "0.0.1",
+	"description": "Asynchronous, non-blocking Nano cryptocurrency integration toolkit.",
 	"keywords": [
 		"nano",
-		"currency",
-		"mnemonic",
 		"crypto",
+		"currency",
+		"coin",
 		"wallet",
+		"mnemonic",
+		"seed",
 		"block",
 		"sign",
 		"encrypt",
-		"decrypt"
+		"decrypt",
+		"keys"
+	],
+	"homepage": "https://zoso.dev",
+	"bugs": "https://zoso.dev",
+	"license": "(GPL-3.0-or-later AND MIT)",
+	"author": "Chris Duncan <chris@zoso.dev>",
+	"funding": {
+		"type": "nano",
+		"url": "nano:nano_3zoso1ed84ziiaso754ifdkbh4ye1qu8kjinzfp3zdsrdcfsh7r833hkrqon"
+	},
+	"files": [
+		"/dist",
+		"/LICENSES",
+		"AUTHORS.md",
+		"package.json.license"
 	],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"files": [
-		"/dist"
-	],
 	"unpkg": "dist/index.min.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://zoso.dev/xno.git"
+	},
 	"scripts": {
 		"build": "rm -rf dist && tsc",
-		"test": "mocha --reporter spec"
+		"test": "node --test"
 	},
 	"dependencies": {
 		"bignumber.js": "^9.1.2",
-		"blakejs": "^1.2.1",
-		"buffer": "^6.0.3",
-		"byte-base64": "^1.1.0",
-		"crypto-browserify": "^3.12.0",
-		"stream-browserify": "^3.0.0",
-		"vm-browserify": "^1.1.2"
+		"blakejs": "^1.2.1"
 	},
 	"devDependencies": {
-		"chai": "^5.1.1",
-		"mocha": "^10.7.3",
+		"@types/node": "^22.3.0",
 		"typescript": "^5.5.4"
 	},
-	"type": "module"
+	"type": "module",
+	"private": true
 }

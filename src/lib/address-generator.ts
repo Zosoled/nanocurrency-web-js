@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import AddressImporter, { Wallet } from './address-importer.js'
 import Bip39Mnemonic from './bip39-mnemonic.js'
 

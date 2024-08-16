@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # nanocurrency-web
 
 [![Build Status](https://travis-ci.org/numsu/nanocurrency-web-js.svg?branch=master)](https://travis-ci.org/numsu/nanocurrency-web-js)

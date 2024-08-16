@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import Box from './lib/nano-box.js'
 
 const box = {

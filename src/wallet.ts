@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import AddressGenerator from './lib/address-generator.js'
 import AddressImporter, { Account, Wallet } from './lib/address-importer.js'
 

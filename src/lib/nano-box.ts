@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import Ed25519 from './ed25519.js'
 import NanoAddress from './nano-address.js'
 import Convert from './convert.js'

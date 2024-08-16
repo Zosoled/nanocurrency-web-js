@@ -1,5 +1,7 @@
-import blakejs from 'blakejs'
-const { blake2bFinal, blake2bInit, blake2bUpdate } = blakejs
+// SPDX-FileCopyrightText: 2024 Chris Duncan <chris@zoso.dev>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import { blake2bFinal, blake2bInit, blake2bUpdate } from 'blakejs'
 
 import Ed25519 from './ed25519.js'
 import Convert from './convert.js'
